@@ -35,10 +35,10 @@ public class ControlPanel extends JPanel {
         //change the default layout manager (just for fun)
         setLayout(new GridLayout(1, 4));
         //add all buttons ...TODO
-        frame.add(saveBtn);
-        frame.add(loadBtn);
-        frame.add(resetBtn);
-        frame.add(exitBtn);
+        add(saveBtn);
+        add(loadBtn);
+        add(resetBtn);
+        add(exitBtn);
         //configure listeners for all buttons
         saveBtn.addActionListener(this::save);
         loadBtn.addActionListener(this::load);
@@ -68,23 +68,11 @@ public class ControlPanel extends JPanel {
     }
     
     private void reset(ActionEvent e) {
-        try {
-            
-            ImageIO.write(frame.canvas.image, "PNG", new File("d:/test.png"));
-            
-        } catch (IOException ex) {
-            System.err.println(ex);
-        }
+        System.exit(0);
     }
     
     private void exit(ActionEvent e) {
-        try {
-            
-            ImageIO.write(frame.canvas.image, "PNG", new File("d:/test.png"));
-            
-        } catch (IOException ex) {
-            System.err.println(ex);
-        }
+        System.exit(0);
     }
 
 }
