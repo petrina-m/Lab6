@@ -8,9 +8,13 @@ package lab6;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
 /**
@@ -60,15 +64,29 @@ public class ControlPanel extends JPanel {
     private void load(ActionEvent e) {
         try {
             
-            ImageIO.write(frame.canvas.image, "PNG", new File("d:/test.png"));
+            JFileChooser chooser= new JFileChooser();
+            int returnVal=chooser.showOpenDialog(frame);
+            if(returnVal == JFileChooser.APPROVE_OPTION)
+            {
+            FileInputStream file=new FileInputStream(chooser.getSelectedFile().getAbsolutePath());
+            ObjectInputStream in= new ObjectInputStream(file);
+            file.close();
+           
+            }
             
-        } catch (IOException ex) {
-            System.err.println(ex);
+        } catch (FileNotFoundException FileNotFoundException) {
+            System.err.println(FileNotFoundException);
         }
+        catch(IOException ex)
+        {
+          //  System.err.println(ex);
+            ex.printStackTrace();
+        }
+        
     }
     
     private void reset(ActionEvent e) {
-        System.exit(0);
+       frame.canvas.clear();
     }
     
     private void exit(ActionEvent e) {

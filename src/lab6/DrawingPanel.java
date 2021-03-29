@@ -9,9 +9,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.List;
+import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -26,6 +29,7 @@ public class DrawingPanel extends JPanel {
     final static int W = 800, H = 600;
     BufferedImage image; //the offscreen image
     Graphics2D graphics; //the "tools" needed to draw in the image
+    List<ConfiguredShape> shapes = new ArrayList<>();
 
     public DrawingPanel(MainFrame frame) {
         this.frame = frame;
@@ -39,22 +43,69 @@ public class DrawingPanel extends JPanel {
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                drawShape(e.getX(), e.getY());
+                if (((String) frame.configPanel.actionCombo.getSelectedItem()).equals("Add")) {
+                    drawShape(e.getX(), e.getY());
+                } else if (((String) frame.configPanel.actionCombo.getSelectedItem()).equals("Remove")) {
+                    deleteShape(e.getX(), e.getY());
+                }
+                
                 repaint();
             } //Can’t use lambdas, JavaFX does a better job in these cases
+
+          
         });
     }
 
     private void drawShape(int x, int y) {
-        int radius = (int) (Math.random()*50+5);
-        int sides = (int)frame.configPanel.sidesField.getValue();
-        Random rand = new Random();
-        float r = rand.nextFloat();
-        float g = rand.nextFloat();
-        float b = rand.nextFloat();
-        Color color = new Color(r, g, b);
+        int radius = (int) (Math.random() * 50 + 5);
+        int sides = (int) frame.configPanel.sidesField.getValue();
+        Color color;
+
+        if (((String) frame.configPanel.colorCombo.getSelectedItem()).equals("Black")) {
+            color = Color.black;
+        } else {
+            Random rand = new Random();
+            float r = rand.nextFloat();
+            float g = rand.nextFloat();
+            float b = rand.nextFloat();
+            color = new Color(r, g, b);
+        }
+
         graphics.setColor(color);
-        graphics.fill(new RegularPolygon(x, y, radius, sides));
+        Shape newShape;
+        if (((String) frame.configPanel.shapeCombo.getSelectedItem()).equals("Circle")) {
+            newShape = new NodeShape(x, y, radius);
+        } else {
+            newShape = new RegularPolygon(x, y, radius, sides);
+        }
+
+        graphics.fill(newShape);
+        shapes.add(new ConfiguredShape(newShape, color));
+
+    }
+  
+
+    private void deleteShape(int x, int y) {
+        int length = shapes.size();
+        int id;
+        for (id = length - 1; id >= 0; id--) {
+            if (shapes.get(id).shape.contains(x, y)) {
+                shapes.remove(id);
+                drawAll();
+                return;
+            }
+        }
+
+    }
+
+    private void drawAll() {
+        clear();
+        int i;
+        for (i = 0; i < shapes.size(); i++) {
+            graphics.setColor(shapes.get(i).color);
+            graphics.fill(shapes.get(i).shape);
+        }
+        repaint();
     }
 
     @Override
@@ -71,6 +122,12 @@ public class DrawingPanel extends JPanel {
         graphics = image.createGraphics();
         graphics.setColor(Color.WHITE); //fill the image with white
         graphics.fillRect(0, 0, W, H);
+    }
+
+    public void clear() {
+        graphics.setColor(Color.white);
+        graphics.fillRect(0, 0, W, H);
+        repaint();
     }
 
 }

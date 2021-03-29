@@ -6,6 +6,9 @@
 package lab6;
 
 import java.awt.Color;
+import java.awt.Shape;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Random;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -23,6 +26,8 @@ public class ConfigPanel extends JPanel {
     JLabel label; // we’re drawing regular polygons
     JSpinner sidesField; // number of sides
     JComboBox colorCombo; // the color of the shape
+    JComboBox shapeCombo;
+    JComboBox actionCombo;
     JLabel sidesLabel;
 
     public ConfigPanel(MainFrame frame) {
@@ -38,18 +43,18 @@ public class ConfigPanel extends JPanel {
         sidesField.setValue(6); //default number of sides
         //create the colorCombo, containing the values: Random and Black
 
-        Color black = Color.black;
-        Random rand = new Random();
-        float r = rand.nextFloat();
-        float g = rand.nextFloat();
-        float b = rand.nextFloat();
-        Color randomColor = new Color(r, g, b);
-        Color[] colorList = {black,randomColor};
-        colorCombo = new JComboBox(colorList);
+        colorCombo = new JComboBox(new String[]{"Black", "Random Color"});
 
-        add(sidesLabel); //JPanel uses FlowLayout by default
-        add(sidesField);
-        add(colorCombo);
+        shapeCombo = new JComboBox(new String[]{"Circle", "Polygon"});
+        actionCombo = new JComboBox(new String[]{"Add", "Remove"});
+
+          add(sidesLabel); 
+          add(sidesField);
+   
+
+         add(colorCombo);
+         add(shapeCombo);
+         add(actionCombo);
     }
 
 }
